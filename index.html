@@ -2,34 +2,60 @@
 <html>
     <head>
         <title>Harvard Art Museums Galleries</title>
+        <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity = "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin = "anonymous">
         <link href="static/css/styles.css" rel="stylesheet" />
     </head>
     <body>
         <h1 class="title">Harvard Art Museums</h1>
-        <div id="all-objects" style="display:none">
-            <h2>Objects</h2>
-            <table>
-                <thead>
-                    <th>Name</th>
-                    <th>Image</th>
-                    <th>People</th>
-                    <th>URL</th>
-                </thead>
-                <tbody id="objects">
-                </tbody>
-            </table>
-            <button class="home"  type="button">Home</button>
-        </div>
         <div id="all-galleries">
             <h2>Galleries</h2>
-            <ul id="galleries">
+            <form id="floorForm">
+                <fieldset>
+                    <p>
+                        <label>Which floor would you like to view?</label>
+                        <select id = "floorList">
+                            <option value = "all">All Floors</option>
+                            <option value = "1">Floor 1</option>
+                            <option value = "2">Floor 2</option>
+                            <option value = "3">Floor 3</option>
+                            <option value = "4">Floor 4</option>
+                        </select>
+                        <input type="button" class="btn btn-secondary" value="Filter" onclick="showGalleryFloor('https://api.harvardartmuseums.org/gallery?apikey=8b42a0c0-d56a-11e9-86e9-6733b6ff9504'); clearHtml()">
+                    </p>
+                </fieldset>
+            </form>
+            <ul id="galleries" class="list-group"></ul>
             </ul>
         </div>
-        <div id="object-details" style="display:none">
-            <h2>Object</h2>
-            <div id="object">
-            </div>
-            <button class="home"  type="button">Home</button>
+        <div id="all-objects">
+            <h2>Objects</h2>
+            <table id="objects" class="table table-hover table-bordered">
+                <tr>
+                    <thead class="thead-light">
+                    <th scope="col"><b>Title</b></th>
+                    <th scope="col"><b>Image</b></th>
+                    <th scope="col"><b>People</b></th>
+                    <th scope="col"><b>Link</b></th>
+                </tr>
+            </table>
+            <form id="objecttablebackbutton">
+            </form>
+        </div>
+        <div id="object-view">
+            <h2>Object Information</h2>
+            <table id="objectinfo" class="table table-hover table-bordered">
+                <tr>
+                    <thead class="thead-light">
+                    <th scope="col"><b>Title</b></th>
+                    <th scope="col"><b>Description</b></th>
+                    <th scope="col"><b>Provenance</b></th>
+                    <th scope="col"><b>Accession Year</b></th>
+                    <th scope="col"><b>Image</b></th>
+                    <th scope = "col"><b>Favorite</b></th>
+                </tr>
+            </table>
+            <form id="objectviewbackbutton">
+            </form>
         </div>
         <script src="static/js/script.js"></script>
     </body>
