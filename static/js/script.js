@@ -169,22 +169,13 @@ function showFavs(){
     .then((response) => response.json())
     .then((data) => {
       data.records.forEach((obj) => {
-        let checkVar = false;
-        if (info) {
-          console.log("I loaded favs");
-          checkVar = (info.favs.includes(obj.objectnumber));
-        }
-        else {
-          console.log("could not load favs");
-        }
         fObject.innerHTML += `
           <tr>
             <td>${obj.title}</td>
             <td>${obj.description}</td>
             <td>${obj.provenance}</td>
             <td>${obj.accessionyear}</td>
-            <td>${obj.primaryimageurl}</td>
-            <td><input type="checkbox"  onclick="check('${obj.objectnumber}', ${checkVar})"></td>
+            <td><img src=${obj.primaryimageurl}></td>
           </tr> `;
         });})})}
   else {
