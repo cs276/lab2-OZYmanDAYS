@@ -3,35 +3,48 @@
     <head>
         <title>Search</title>
         <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity = "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin = "anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <link href="static/css/styles.css" rel="stylesheet" />
     </head>
     <body>
-        <form>
+        <form id="searchOption">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-secondary active">
-                      <input type="radio" name="options" id="option1" autocomplete="off" checked> gallery
+                
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" value="objectSearch" autocomplete="off"> object
                     </label>
                     <label class="btn btn-secondary">
-                            <input type="radio" name="options" id="option2" autocomplete="off"> title
-                          </label>
+                        <input type="radio" name="options" value="titleSearch" autocomplete="off"> title
+                    </label> 
                     <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="option3" autocomplete="off"> culture
+                        <input type="radio" name="options" value="cultureSearch" autocomplete="off">  culture
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="option4" autocomplete="off"> person
+                        <input type="radio" name="options" value="personSearch" autocomplete="off"> person
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="option5" autocomplete="off"> keyword
+                        <input type="radio" name="options" value="keywordSearch" autocomplete="off">keyword
                     </label>
                   </div>
             <div>
-                <input type="text">
+                <input type="text" id="usersearch">
             </div>
             <div>
-                <input type = "button" value = "Search">
+                <input type = "button" value = "Search" onclick="search(document.querySelector('#usersearch').value); clearHtmlS()">
             </div>
-
           </form> 
+        <div>
+            <table id="searchResults">
+                <th>Title</th>
+                <th>Description</th>
+                <th>Provenance</th>
+                <th>Accession Year</th>
+                <th>Image</th>
+                <th>Favorite</th>
+            </table>
+        </div>
         <script src="static/js/script.js"></script>
     </body>
 </html>

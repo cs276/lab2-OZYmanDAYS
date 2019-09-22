@@ -13,13 +13,17 @@ table {
 }
 
 table, th, td {
-    border: 1px solid black;
+    border: 2px solid black;
 }
 
 th, td {
-    padding: 5px;
+    padding: 10px;
 }
 
 .gallery-image {
     width: 80px;
+}
+
+#all-objects {
+    display: none;
 }
