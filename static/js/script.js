@@ -113,7 +113,12 @@ function addFav(objnum) {
 function search(searchVal) {
   let sOption = getRadioVal(searchOption, 'options');
   switch (sOption) {
-  case "objectSearch" : searchobjnum(searchVal); break;
+  case "objectSearch" : searchobjnum(searchVal); 
+  case "titleSearch" : searchobjtitle(searchVal);
+  case "cultureSearch" : searchobjculture(searchVal);
+  case "personSearch" : searchobjperson(searchVal);
+  case "keywordSearch" : searchobjkeyword(searchVal);
+  break;
   default : alert("Please select a searchtype"); console.log(sOption);
   }
 }
@@ -160,6 +165,119 @@ function searchobjnum(objnum){
     });
   });
 }
+
+function searchobjtitle(objtitle){
+  let info = JSON.parse(window.localStorage.getItem('info'));
+  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&title=${objtitle}`)
+  .then((response) => response.json())
+  .then((data) => {
+    data.records.forEach((obj) => {
+      let checkVar = false;
+      if (info) {
+        console.log("I loaded favs");
+        checkVar = (info.favs.includes(obj.objectnumber));
+      }
+      else {
+        console.log("could not load favs");
+      }
+      searchResults.innerHTML += `
+      <tr>
+        <td>${obj.title}</td>
+        <td>${obj.description}</td>
+        <td>${obj.provenance}</td>
+        <td>${obj.accessionyear}</td>
+        <td><img src=${obj.primaryimageurl}></td>
+        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
+      </tr>
+    `;
+    });
+  });
+}
+
+function searchobjculture(objculture){
+  let info = JSON.parse(window.localStorage.getItem('info'));
+  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&culture=${objculture}`)
+  .then((response) => response.json())
+  .then((data) => {
+    data.records.forEach((obj) => {
+      let checkVar = false;
+      if (info) {
+        console.log("I loaded favs");
+        checkVar = (info.favs.includes(obj.objectnumber));
+      }
+      else {
+        console.log("could not load favs");
+      }
+      searchResults.innerHTML += `
+      <tr>
+        <td>${obj.title}</td>
+        <td>${obj.description}</td>
+        <td>${obj.provenance}</td>
+        <td>${obj.accessionyear}</td>
+        <td><img src=${obj.primaryimageurl}></td>
+        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
+      </tr>
+    `;
+    });
+  });
+}
+
+function searchobjperson(objperson){
+  let info = JSON.parse(window.localStorage.getItem('info'));
+  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&person=${objperson}`)
+  .then((response) => response.json())
+  .then((data) => {
+    data.records.forEach((obj) => {
+      let checkVar = false;
+      if (info) {
+        console.log("I loaded favs");
+        checkVar = (info.favs.includes(obj.objectnumber));
+      }
+      else {
+        console.log("could not load favs");
+      }
+      searchResults.innerHTML += `
+      <tr>
+        <td>${obj.title}</td>
+        <td>${obj.description}</td>
+        <td>${obj.provenance}</td>
+        <td>${obj.accessionyear}</td>
+        <td><img src=${obj.primaryimageurl}></td>
+        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
+      </tr>
+    `;
+    });
+  });
+}
+
+function searchobjkeyword(objkey){
+  let info = JSON.parse(window.localStorage.getItem('info'));
+  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&keyword=${objkey}`)
+  .then((response) => response.json())
+  .then((data) => {
+    data.records.forEach((obj) => {
+      let checkVar = false;
+      if (info) {
+        console.log("I loaded favs");
+        checkVar = (info.favs.includes(obj.objectnumber));
+      }
+      else {
+        console.log("could not load favs");
+      }
+      searchResults.innerHTML += `
+      <tr>
+        <td>${obj.title}</td>
+        <td>${obj.description}</td>
+        <td>${obj.provenance}</td>
+        <td>${obj.accessionyear}</td>
+        <td><img src=${obj.primaryimageurl}></td>
+        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
+      </tr>
+    `;
+    });
+  });
+}
+
 
 function showFavs(){
   let info = JSON.parse(window.localStorage.getItem('info'));
@@ -234,19 +352,31 @@ function showObjectsTable(id) {
   allObjects.style.display = "block";
   allGalleries.style.display = "none";
   objectview.style.display = "none";
+  let storageId = `${id}`;
+  let objArray = {array : []};
   fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&gallery=${id}`)
   .then((response) => response.json())
   .then((data) => {
     data.records.forEach((object) => {
-      objects.innerHTML += `
+      let objElement = document.createElement("tr");
+      objElement.innerHTML = `
+      <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}');">${object.title}</a></td>
+        <td><img src=${object.primaryimageurl}></td>
+        <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
+        <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
+      `;
+      objArray.array.push(objElement);
+      objects.appendChild(objElement);
+      /**objects.innerHTML += `
       <tr>
       <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}');">${object.title}</a></td>
         <td><img src=${object.primaryimageurl}></td>
         <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
         <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
       </tr>
-    `;
+    `;**/
     });
+    window.localStorage.setItem(storageId, objArray);
     button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'">`
   });
 }
@@ -276,16 +406,26 @@ function showObjectInfo(id) {
       else {
         console.log("could not load favs");
       }
-      objectinfo.innerHTML += `
-      <tr>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
         <td>${obj.title}</td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+
+      //console.log(child);
+      let newCheck = document.createElement("input");
+      newCheck.type = "checkbox";
+      if (info.favs.includes(obj.objectnumber)) {
+        newCheck.checked = true;
+      }
+      newCheck.onclick = check(obj.objectnumber, checkVar);
+      newCheckBox = document.createElement("td");
+      newCheckBox.appendChild(newCheck);
+      tableRow.appendChild(newCheckBox);
+      objectinfo.appendChild(tableRow);
     });
     button2.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'">`
   });
