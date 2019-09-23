@@ -236,16 +236,26 @@ function searchobjperson(objperson){
       else {
         console.log("could not load favs");
       }
-      searchResults.innerHTML += `
-      <tr>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
         <td>${obj.title}</td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+
+      //console.log(child);
+      let newCheck = document.createElement("input");
+      newCheck.type = "checkbox";
+      if (info.favs.includes(obj.objectnumber)) {
+        newCheck.checked = true;
+      }
+      newCheck.onclick = check(obj.objectnumber, checkVar);
+      newCheckBox = document.createElement("td");
+      newCheckBox.appendChild(newCheck);
+      tableRow.appendChild(newCheckBox);
+      searchResults.appendChild(tableRow);
     });
   });
 }
@@ -264,16 +274,26 @@ function searchobjkeyword(objkey){
       else {
         console.log("could not load favs");
       }
-      searchResults.innerHTML += `
-      <tr>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
         <td>${obj.title}</td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+
+      //console.log(child);
+      let newCheck = document.createElement("input");
+      newCheck.type = "checkbox";
+      if (info.favs.includes(obj.objectnumber)) {
+        newCheck.checked = true;
+      }
+      newCheck.onclick = check(obj.objectnumber, checkVar);
+      newCheckBox = document.createElement("td");
+      newCheckBox.appendChild(newCheck);
+      tableRow.appendChild(newCheckBox);
+      searchResults.appendChild(tableRow);
     });
   });
 }
