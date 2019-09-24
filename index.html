@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Harvard Art Museums Galleries</title>
+        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
         <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity = "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin = "anonymous">
         <link href="static/css/styles.css" rel="stylesheet" />
     </head>
@@ -29,7 +30,7 @@
         </div>
         <div id="all-objects">
             <h2>Objects</h2>
-            <table id="objects" class="table table-hover table-bordered">
+            <table id="objectslel" class="table table-hover table-bordered">
                 <tr>
                     <thead class="thead-light">
                     <th scope="col"><b>Title</b></th>
@@ -38,8 +39,14 @@
                     <th scope="col"><b>Link</b></th>
                 </tr>
             </table>
+            <table id="objects" class="table table-hover table-bordered">
+
+            </table>
             <form id="objecttablebackbutton">
             </form>
+            <div id="box">
+
+            </div>
         </div>
         <div id="object-view">
             <h2>Object Information</h2>
@@ -58,5 +65,6 @@
             </form>
         </div>
         <script src="static/js/script.js"></script>
+        <script src="static/js/paginator.js"></script>
     </body>
 </html>

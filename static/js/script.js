@@ -26,6 +26,9 @@ function load() {
   else if (site == "search.html") {
     //showSearch();
   }
+  else if (hash) {
+    showObjectsTable(hash);
+  }
   else {
       showGalleries(url);
   }
@@ -94,7 +97,7 @@ function clearHtmlS() {
   <th>Provenance</th>
   <th>Accession Year</th>
   <th>Image</th>
-  <th>Favorite</th>`;
+  `;
 }
 
 function addFav(objnum) {
@@ -152,16 +155,15 @@ function searchobjnum(objnum){
       else {
         console.log("could not load favs");
       }
-      searchResults.innerHTML += `
-      <tr>
-        <td>${obj.title}</td>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
+      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+      searchResults.appendChild(tableRow);
     });
   });
 }
@@ -180,16 +182,15 @@ function searchobjtitle(objtitle){
       else {
         console.log("could not load favs");
       }
-      searchResults.innerHTML += `
-      <tr>
-        <td>${obj.title}</td>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
+      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+      searchResults.appendChild(tableRow);
     });
   });
 }
@@ -208,16 +209,15 @@ function searchobjculture(objculture){
       else {
         console.log("could not load favs");
       }
-      searchResults.innerHTML += `
-      <tr>
-        <td>${obj.title}</td>
+      let tableRow = document.createElement("tr");
+      tableRow.innerHTML = `        
+      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
-        <td><input type="checkbox" onclick="check('${obj.objectnumber}', ${checkVar})"></td>
-      </tr>
-    `;
+      `;
+      searchResults.appendChild(tableRow);
     });
   });
 }
@@ -238,23 +238,12 @@ function searchobjperson(objperson){
       }
       let tableRow = document.createElement("tr");
       tableRow.innerHTML = `        
-        <td>${obj.title}</td>
+      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
       `;
-
-      //console.log(child);
-      let newCheck = document.createElement("input");
-      newCheck.type = "checkbox";
-      if (info.favs.includes(obj.objectnumber)) {
-        newCheck.checked = true;
-      }
-      newCheck.onclick = check(obj.objectnumber, checkVar);
-      newCheckBox = document.createElement("td");
-      newCheckBox.appendChild(newCheck);
-      tableRow.appendChild(newCheckBox);
       searchResults.appendChild(tableRow);
     });
   });
@@ -276,23 +265,12 @@ function searchobjkeyword(objkey){
       }
       let tableRow = document.createElement("tr");
       tableRow.innerHTML = `        
-        <td>${obj.title}</td>
+      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
         <td><img src=${obj.primaryimageurl}></td>
       `;
-
-      //console.log(child);
-      let newCheck = document.createElement("input");
-      newCheck.type = "checkbox";
-      if (info.favs.includes(obj.objectnumber)) {
-        newCheck.checked = true;
-      }
-      newCheck.onclick = check(obj.objectnumber, checkVar);
-      newCheckBox = document.createElement("td");
-      newCheckBox.appendChild(newCheck);
-      tableRow.appendChild(newCheckBox);
       searchResults.appendChild(tableRow);
     });
   });
@@ -309,7 +287,7 @@ function showFavs(){
       data.records.forEach((obj) => {
         fObject.innerHTML += `
           <tr>
-            <td>${obj.title}</td>
+          <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
             <td>${obj.description}</td>
             <td>${obj.provenance}</td>
             <td>${obj.accessionyear}</td>
@@ -387,17 +365,25 @@ function showObjectsTable(id) {
       `;
       objArray.array.push(objElement);
       objects.appendChild(objElement);
-      /**objects.innerHTML += `
-      <tr>
-      <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}');">${object.title}</a></td>
-        <td><img src=${object.primaryimageurl}></td>
-        <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
-        <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
-      </tr>
-    `;**/
     });
     window.localStorage.setItem(storageId, objArray);
-    button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'">`
+    button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'">`;
+    paginate();
+  });
+}
+
+/**
+ * this is a paginator function borrowed from open source on the internet found at 
+ * @param {*} id 
+ */
+function paginate() {
+  paginator({
+    get_rows: function () {
+        console.log(objects.getElementsByTagName("tr"));  
+        return objects.getElementsByTagName("tr");
+          },
+    box: document.getElementById("box"),
+    active_class: "color_page"
   });
 }
 
@@ -438,7 +424,7 @@ function showObjectInfo(id) {
       //console.log(child);
       let newCheck = document.createElement("input");
       newCheck.type = "checkbox";
-      if (info.favs.includes(obj.objectnumber)) {
+      if (info && info.favs.includes(obj.objectnumber)) {
         newCheck.checked = true;
       }
       newCheck.onclick = check(obj.objectnumber, checkVar);
