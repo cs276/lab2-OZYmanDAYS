@@ -5,9 +5,11 @@ const galleries = document.querySelector("#galleries");
 const allObjects = document.querySelector("#all-objects");
 const allGalleries = document.querySelector("#all-galleries");
 const objects = document.querySelector("#objects");
+const objectsPage = document.querySelector("#objectsPage");
 const objectview = document.querySelector("#object-view");
 const objectinfo = document.querySelector("#objectinfo");
 const searchResults = document.querySelector("#searchResults");
+const searchResultsPage = document.querySelector("#searchResultsPage");
 const searchOption = document.querySelector("#searchOption");
 const searchVal = document.querySelector("usersearch");
 const button = document.querySelector("#gobackbutton");
@@ -16,6 +18,7 @@ const button2 = document.querySelector("#objectviewbackbutton");
 const floorOption = document.querySelector("#floorList");
 const objectContainer = document.querySelector('#object');
 const fObject = document.querySelector("#fObject");
+const fObjectPage = document.querySelector("#fObjectPage");
 
 function load() {
   let hash = (window.location.hash).replace('#', '');
@@ -23,11 +26,11 @@ function load() {
   if (site == "favorites.html") {
     showFavs();
   }
-  else if (site == "search.html") {
-    //showSearch();
-  }
   else if (hash) {
     showObjectsTable(hash);
+  }
+  else if (site != "index.html") {
+    //showSearch();
   }
   else {
       showGalleries(url);
@@ -80,7 +83,6 @@ function showGalleryFloor(url) {
       `;
       }
     });
-
     if (data.info.next) {
       showGalleryFloor(data.info.next);
     }
@@ -96,34 +98,19 @@ function clearHtmlS() {
   <th>Description</th>
   <th>Provenance</th>
   <th>Accession Year</th>
-  <th>Image</th>
-  `;
+  <th>Image</th>`;
+  searchResultsPage.innerHTML = '';
 }
 
 function addFav(objnum) {
   let info = JSON.parse(window.localStorage.getItem('info'));
   if(info) {
     info.favs.push(objnum);
-    console.log("added to existing favs list");
   }
   else {
     info = {favs : [objnum]};
-    console.log("created new favs list");
   }
   window.localStorage.setItem('info', JSON.stringify(info));
-}
-
-function search(searchVal) {
-  let sOption = getRadioVal(searchOption, 'options');
-  switch (sOption) {
-  case "objectSearch" : searchobjnum(searchVal); 
-  case "titleSearch" : searchobjtitle(searchVal);
-  case "cultureSearch" : searchobjculture(searchVal);
-  case "personSearch" : searchobjperson(searchVal);
-  case "keywordSearch" : searchobjkeyword(searchVal);
-  break;
-  default : alert("Please select a searchtype"); console.log(sOption);
-  }
 }
 
 function getRadioVal(form, name) {
@@ -141,141 +128,39 @@ function getRadioVal(form, name) {
   return val; // return value of checked radio or undefined if none checked
 }
 
-function searchobjnum(objnum){
-  let info = JSON.parse(window.localStorage.getItem('info'));
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&objectnumber=${objnum}`)
-  .then((response) => response.json())
-  .then((data) => {
-    data.records.forEach((obj) => {
-      let checkVar = false;
-      if (info) {
-        console.log("I loaded favs");
-        checkVar = (info.favs.includes(obj.objectnumber));
+function searchtype(searchVal){
+  let sOption = getRadioVal(searchOption, 'options');
+  if (searchVal == "") {
+    alert("Please search for something!")
+    console.log(searchVal)
+  }
+  else if (sOption == null) {
+    alert("Please select a search type!")
+  }
+  else {
+    fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&${sOption}=${searchVal}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.records.length == 0) {
+        searchResults.innerHTML += `<h1>Gallery contains no objects.</h1>`;
+        searchResultsPage.innerHTML = '';
       }
       else {
-        console.log("could not load favs");
-      }
-      let tableRow = document.createElement("tr");
-      tableRow.innerHTML = `        
-      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
-        <td>${obj.description}</td>
-        <td>${obj.provenance}</td>
-        <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
+      data.records.forEach((obj) => {
+        searchResultsPage.innerHTML += `
+        <tr>
+          <td>${obj.title}</td>
+          <td>${obj.description}</td>
+          <td>${obj.provenance}</td>
+          <td>${obj.accessionyear}</td>
+          <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
+        </tr>
       `;
-      searchResults.appendChild(tableRow);
+      paginate(searchResultsPage);
     });
-  });
+  }});
 }
-
-function searchobjtitle(objtitle){
-  let info = JSON.parse(window.localStorage.getItem('info'));
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&title=${objtitle}`)
-  .then((response) => response.json())
-  .then((data) => {
-    data.records.forEach((obj) => {
-      let checkVar = false;
-      if (info) {
-        console.log("I loaded favs");
-        checkVar = (info.favs.includes(obj.objectnumber));
-      }
-      else {
-        console.log("could not load favs");
-      }
-      let tableRow = document.createElement("tr");
-      tableRow.innerHTML = `        
-      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
-        <td>${obj.description}</td>
-        <td>${obj.provenance}</td>
-        <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
-      `;
-      searchResults.appendChild(tableRow);
-    });
-  });
 }
-
-function searchobjculture(objculture){
-  let info = JSON.parse(window.localStorage.getItem('info'));
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&culture=${objculture}`)
-  .then((response) => response.json())
-  .then((data) => {
-    data.records.forEach((obj) => {
-      let checkVar = false;
-      if (info) {
-        console.log("I loaded favs");
-        checkVar = (info.favs.includes(obj.objectnumber));
-      }
-      else {
-        console.log("could not load favs");
-      }
-      let tableRow = document.createElement("tr");
-      tableRow.innerHTML = `        
-      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
-        <td>${obj.description}</td>
-        <td>${obj.provenance}</td>
-        <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
-      `;
-      searchResults.appendChild(tableRow);
-    });
-  });
-}
-
-function searchobjperson(objperson){
-  let info = JSON.parse(window.localStorage.getItem('info'));
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&person=${objperson}`)
-  .then((response) => response.json())
-  .then((data) => {
-    data.records.forEach((obj) => {
-      let checkVar = false;
-      if (info) {
-        console.log("I loaded favs");
-        checkVar = (info.favs.includes(obj.objectnumber));
-      }
-      else {
-        console.log("could not load favs");
-      }
-      let tableRow = document.createElement("tr");
-      tableRow.innerHTML = `        
-      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
-        <td>${obj.description}</td>
-        <td>${obj.provenance}</td>
-        <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
-      `;
-      searchResults.appendChild(tableRow);
-    });
-  });
-}
-
-function searchobjkeyword(objkey){
-  let info = JSON.parse(window.localStorage.getItem('info'));
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&keyword=${objkey}`)
-  .then((response) => response.json())
-  .then((data) => {
-    data.records.forEach((obj) => {
-      let checkVar = false;
-      if (info) {
-        console.log("I loaded favs");
-        checkVar = (info.favs.includes(obj.objectnumber));
-      }
-      else {
-        console.log("could not load favs");
-      }
-      let tableRow = document.createElement("tr");
-      tableRow.innerHTML = `        
-      <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
-        <td>${obj.description}</td>
-        <td>${obj.provenance}</td>
-        <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
-      `;
-      searchResults.appendChild(tableRow);
-    });
-  });
-}
-
 
 function showFavs(){
   let info = JSON.parse(window.localStorage.getItem('info'));
@@ -285,17 +170,18 @@ function showFavs(){
     .then((response) => response.json())
     .then((data) => {
       data.records.forEach((obj) => {
-        fObject.innerHTML += `
+        fObjectPage.innerHTML += `
           <tr>
-          <td><a href="./index.html#${obj.objectnumber}" onclick="showObjectInfo('${obj.objectnumber}');">${obj.title}</a></td>
+            <td>${obj.title}</td>
             <td>${obj.description}</td>
             <td>${obj.provenance}</td>
             <td>${obj.accessionyear}</td>
-            <td><img src=${obj.primaryimageurl}></td>
+            <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
           </tr> `;
         });})})}
   else {
-  fObject.innerHTML += `<h1>No Favorites<\h1>`
+  fObject.innerHTML += `<h1>No Favorites<\h1>`;
+  fObjectPage.innerHTML = '';
   }
 }
 
@@ -311,29 +197,27 @@ function removeFav(objnum) {
 
 
 function deleteAllFav() {
-  window.localStorage.clear();
+  let ans = confirm("Are you sure you want to delete all of your favorite objects?");
+  if (ans) {
+    window.localStorage.clear();
+  }
 }
 
 /**
  * Checks if the favorites checkbox is checked for a given object id
- * @param {*} obj 
  */
 function check(objnum, isChecked) {
   let info = JSON.parse(window.localStorage.getItem('info'));
   if (!isChecked) {
-    console.log("check called add");
     if(info) {
       info.favs.push(objnum);
-      console.log("added to existing favs list");
     }
     else {
       info = {favs : [objnum]};
-      console.log("created new favs list");
     }
     window.localStorage.setItem('info', JSON.stringify(info));
   }
   else {
-    console.log("the shit was checked");
     for(var i = info.favs.length - 1; i >= 0; i--) {
       if(info.favs[i] === objnum) {
          info.favs.splice(i, 1);
@@ -344,7 +228,6 @@ function check(objnum, isChecked) {
 }
 /**
  * Shows all the objects in the gallery of the given id
- * @param {*} id 
  */
 function showObjectsTable(id) {
   allObjects.style.display = "block";
@@ -355,43 +238,37 @@ function showObjectsTable(id) {
   fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&gallery=${id}`)
   .then((response) => response.json())
   .then((data) => {
+    if (data.records.length == 0) {
+      objects.innerHTML += `<h1>Gallery contains no objects.</h1>`
+    }
+    else {
     data.records.forEach((object) => {
       let objElement = document.createElement("tr");
       objElement.innerHTML = `
       <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}');">${object.title}</a></td>
-        <td><img src=${object.primaryimageurl}></td>
+        <td><img src="${object.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
         <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
         <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
       `;
       objArray.array.push(objElement);
-      objects.appendChild(objElement);
-    });
+      objectsPage.appendChild(objElement);
+    });}
+    paginate(objectsPage);
     window.localStorage.setItem(storageId, objArray);
-    button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'">`;
-    paginate();
+    button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'; load()">`
   });
 }
 
-/**
- * this is a paginator function borrowed from open source on the internet found at 
- * @param {*} id 
- */
-function paginate() {
+function paginate(htmlId) {
   paginator({
     get_rows: function () {
-        console.log(objects.getElementsByTagName("tr"));  
-        return objects.getElementsByTagName("tr");
+        return htmlId.getElementsByTagName("tr");
           },
-    box: document.getElementById("box"),
+    box: document.getElementById("objectTableBox"),
     active_class: "color_page"
   });
 }
 
-/**
- * This function shows individual object information after clicking on an object's name within a gallery,
- * favorite, or search list.
- * @param {*} id 
- */
 function showObjectInfo(id) {
   allObjects.style.display = "none";
   allGalleries.style.display = "none";
@@ -418,10 +295,8 @@ function showObjectInfo(id) {
         <td>${obj.description}</td>
         <td>${obj.provenance}</td>
         <td>${obj.accessionyear}</td>
-        <td><img src=${obj.primaryimageurl}></td>
+        <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
       `;
-
-      //console.log(child);
       let newCheck = document.createElement("input");
       newCheck.type = "checkbox";
       if (info && info.favs.includes(obj.objectnumber)) {

@@ -1,5 +1,22 @@
 .title {
     text-align: center;
+    font-size: 300%;
+    text-transform: uppercase;
+    text-shadow: 3px 2px gray;
+    font-style: oblique;
+    color: maroon;
+}
+
+h2 {
+    font-size: 200%;
+    font-weight: bold;
+    text-align: center;
+}
+
+h3 {
+    font-size: 100%;
+    text-align: center; 
+    line-height: 200%;
 }
 
 a {
@@ -8,8 +25,23 @@ a {
     cursor: pointer;
 }
 
+label {
+    text-indent: 20px;
+}
+
+li {
+	margin: 30px;
+	list-style: none;
+	background-image: url('harvard.jpg');
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-size: 20px;
+}
+
+
 table {
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
 table, th, td {
@@ -20,10 +52,28 @@ th, td {
     padding: 10px;
 }
 
-.gallery-image {
+th {
+    font-size: 150%;
+}
+
+td {
+    font-size: 125%;
+}
+
+img {
     width: 80px;
+    height: 100px;
 }
 
 #all-objects {
     display: none;
+}
+
+.button {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 100%;
 }

@@ -6,17 +6,26 @@
         <link href="static/css/styles.css" rel="stylesheet" />
     </head>
     <body>
+            <h1 class="title">Harvard Art Museums</h1>
+            <div class = "col-sm-offset-5 col-sm-12 text-center m-2 p-2">
+                    <a href="index.html"><button type="button" class="btn btn-secondary btn-lg m-2">Home</button></a>
+                    <a href="favorites.html"><button type="button" class="btn btn-secondary btn-lg m-2">Favorites</button></a>
+                    <a href="search.html"><button type="button" class="btn btn-secondary btn-lg m-2">Search</button></a>
+                </div>
             <h2>Object</h2>
-            <input type="button" onclick="deleteAllFav()">
+            <input type="image" src="./trash.jpg" value = "Delete all Favorites" onclick="deleteAllFav()" class="mr-3" style= "float:right; width: 70px;
+            height: 70px">
             <div>
-                <table id="fObject">
+                <table id="fObject" class="table table-hover table-bordered">
                     <th>Title</th>
                     <th>Description</th>
                     <th>Provenance</th>
                     <th>Accession Year</th>
                     <th>Image</th>
                 </table>
+                <table id="fObjectPage"></table>
             </div>
         <script src="static/js/script.js"></script>
+        <script src="static/js/paginator.js"></script>
     </body>
 </html>
