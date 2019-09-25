@@ -29,12 +29,12 @@ function load() {
   else if (hash) {
     showObjectsTable(hash);
   }
-  else if (site != "index.html") {
-    //showSearch();
+  else if (site != 'index.html') {
+    //paginate(searchResultsPage);
   }
   else {
       showGalleries(url);
-      paginateGal(galleries);
+      //paginateGal(galleries);
   }
 }
 
@@ -49,19 +49,18 @@ function showGalleries(url) {
   .then((response) => response.json())
   .then((data) => {
     data.records.forEach((gallery) => {
-      galleries.innerHTML += `
-        <li class="list-group-item">
-          <a href="#${gallery.id}" onclick="showObjectsTable(${gallery.id})">
-            Gallery #${gallery.id}: ${gallery.name} (Floor ${gallery.floor})
-          </a>
-        </li>
-      `;
+      let galleryEntry = document.createElement("li");
+      galleryEntry.class = "list-group-item";
+      galleryEntry.innerHTML += `<a href="#${gallery.id}" onclick="showObjectsTable(${gallery.id})">
+      Gallery #${gallery.id}: ${gallery.name} (Floor ${gallery.floor})
+    </a>`;
+    galleries.appendChild(galleryEntry);
     });
 
     if (data.info.next) {
       showGalleries(data.info.next);
     }
-    paginateGal(galleries)
+    paginateGal(galleries);
   });
 }
 
@@ -88,7 +87,7 @@ function showGalleryFloor(url) {
     if (data.info.next) {
       showGalleryFloor(data.info.next);
     }
-    paginateGal(galleries);
+    //paginateGal(galleries);
   });
 }
 
@@ -151,15 +150,15 @@ function searchtype(searchVal, page = 1){
       }
       else {
       data.records.forEach((obj) => {
-        searchResultsPage.innerHTML += `
-        <tr>
+        let searchEntry = document.createElement("tr");
+        searchEntry.innerHTML += `
           <td>${obj.title}</td>
           <td>${obj.description}</td>
           <td>${obj.provenance}</td>
           <td>${obj.accessionyear}</td>
           <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
-        </tr>
       `;
+      searchResultsPage.appendChild(searchEntry);
     });
     if (data.info.next) {
       searchtype(searchVal, page + 1);
@@ -177,14 +176,15 @@ function showFavs(){
     .then((response) => response.json())
     .then((data) => {
       data.records.forEach((obj) => {
-        fObjectPage.innerHTML += `
-          <tr>
+        let favEntry = document.createElement("tr");
+        favEntry.innerHTML += `
             <td>${obj.title}</td>
             <td>${obj.description}</td>
             <td>${obj.provenance}</td>
             <td>${obj.accessionyear}</td>
             <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
-          </tr> `;
+          `;
+        fObjectPage.appendChild(favEntry);
         });})})}
   else {
   fObject.innerHTML += `<h1>No Favorites<\h1>`;
@@ -252,7 +252,7 @@ function showObjectsTable(id, page = 1) {
     data.records.forEach((object) => {
       let objElement = document.createElement("tr");
       objElement.innerHTML = `
-      <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}');">${object.title}</a></td>
+      <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}')">${object.title}</a></td>
         <td><img src="${object.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
         <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
         <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
