@@ -30,12 +30,9 @@ label {
 }
 
 li {
-	margin: 30px;
-	list-style: none;
-	background-image: url('harvard.jpg');
-	background-repeat: no-repeat;
-	background-position: left center;
-	background-size: 20px;
+	margin: 40px;
+    list-style: circle;
+    line-height: 50%;
 }
 
 

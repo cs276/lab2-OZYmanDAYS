@@ -30,11 +30,9 @@ function load() {
     showObjectsTable(hash);
   }
   else if (site != 'index.html') {
-    //paginate(searchResultsPage);
   }
   else {
       showGalleries(url);
-      //paginateGal(galleries);
   }
 }
 
@@ -50,7 +48,7 @@ function showGalleries(url) {
   .then((data) => {
     data.records.forEach((gallery) => {
       let galleryEntry = document.createElement("li");
-      galleryEntry.class = "list-group-item";
+      galleryEntry.class = "list-group-item m-2";
       galleryEntry.innerHTML += `<a href="#${gallery.id}" onclick="showObjectsTable(${gallery.id})">
       Gallery #${gallery.id}: ${gallery.name} (Floor ${gallery.floor})
     </a>`;
@@ -75,19 +73,18 @@ function showGalleryFloor(url) {
   .then((data) => {
     data.records.forEach((gallery) => {
       if(floor == "all" || gallery.floor == floor) {
-      galleries.innerHTML += `
-      <li class="list-group-item">
-        <a href="#${gallery.id}" onclick="showObjectsTable(${gallery.id})">
-          Gallery #${gallery.id}: ${gallery.name} (Floor ${gallery.floor})
-        </a>
-      </li>
-      `;
+      let galleryEntry = document.createElement("li");
+      galleryEntry.class = "list-group-item m-2";
+      galleryEntry.innerHTML += `<a href="#${gallery.id}" onclick="showObjectsTable(${gallery.id})">
+      Gallery #${gallery.id}: ${gallery.name} (Floor ${gallery.floor})
+    </a>`;
+    galleries.appendChild(galleryEntry);
       }
     });
     if (data.info.next) {
       showGalleryFloor(data.info.next);
     }
-    //paginateGal(galleries);
+    paginateGal(galleries);
   });
 }
 
@@ -96,11 +93,11 @@ function clearHtml() {
 }
 
 function clearHtmlS() {
-  searchResults.innerHTML = `<th>Title</th>
-  <th>Description</th>
-  <th>Provenance</th>
-  <th>Accession Year</th>
-  <th>Image</th>`;
+  searchResults.innerHTML = `<th style="width: 160px; font-size: 17px">Title</th>
+  <th style="width: 480px; font-size: 17px">Description</th>
+  <th style="width: 320px; font-size: 17px">Provenance</th>
+  <th style="width: 10px; font-size: 12px">Accession Year</th>
+  <th style="width: 30px; font-size: 17px">Image</th>`;
   searchResultsPage.innerHTML = '';
 }
 
@@ -152,11 +149,11 @@ function searchtype(searchVal, page = 1){
       data.records.forEach((obj) => {
         let searchEntry = document.createElement("tr");
         searchEntry.innerHTML += `
-          <td>${obj.title}</td>
-          <td>${obj.description}</td>
-          <td>${obj.provenance}</td>
-          <td>${obj.accessionyear}</td>
-          <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
+          <td style="width: 165px; font-size: 17px">${obj.title}</td>
+          <td style="width: 490px; font-size: 17px">${obj.description}</td>
+          <td style="width: 300px; font-size: 17px">${obj.provenance}</td>
+          <td style="width: 10px; font-size: 17px">${obj.accessionyear}</td>
+          <td style="width: 10px; font-size: 17px"><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
       `;
       searchResultsPage.appendChild(searchEntry);
     });
@@ -178,11 +175,11 @@ function showFavs(){
       data.records.forEach((obj) => {
         let favEntry = document.createElement("tr");
         favEntry.innerHTML += `
-            <td>${obj.title}</td>
-            <td>${obj.description}</td>
-            <td>${obj.provenance}</td>
-            <td>${obj.accessionyear}</td>
-            <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
+            <td style="width: 205px; font-size: 17px">${obj.title}</td>
+            <td style="width: 630px; font-size: 17px">${obj.description}</td>
+            <td style="width: 390px; font-size: 17px">${obj.provenance}</td>
+            <td style="width: 15px; font-size: 12px">${obj.accessionyear}</td>
+            <td style="width: 20px; font-size: 17px"><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
           `;
         fObjectPage.appendChild(favEntry);
         });})})}
@@ -252,10 +249,10 @@ function showObjectsTable(id, page = 1) {
     data.records.forEach((object) => {
       let objElement = document.createElement("tr");
       objElement.innerHTML = `
-      <td><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}')">${object.title}</a></td>
-        <td><img src="${object.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
-        <td>${object.people ? object.people.map(x => x.name): "Unknown"}</td>
-        <td><a href="${object.url}" target="_blank">Click to visit page</a></td>
+      <td style="width: 220px; font-size: 17px"><a href="#${object.objectnumber}" onclick="showObjectInfo('${object.objectnumber}')">${object.title}</a></td>
+        <td style="width: 15px; font-size: 17px"><img src="${object.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
+        <td style="width: 120px; font-size: 17px">${object.people ? object.people.map(x => x.name): "Unknown"}</td>
+        <td style="width: 100px; font-size: 17px"><a href="${object.url}" target="_blank">Click to visit page</a></td>
       `;
       objArray.array.push(objElement);
       objectsPage.appendChild(objElement);
