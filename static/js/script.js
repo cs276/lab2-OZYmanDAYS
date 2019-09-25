@@ -236,13 +236,13 @@ function check(objnum, isChecked) {
 /**
  * Shows all the objects in the gallery of the given id
  */
-function showObjectsTable(id) {
+function showObjectsTable(id, page = 1) {
   allObjects.style.display = "block";
   allGalleries.style.display = "none";
   objectview.style.display = "none";
   let storageId = `${id}`;
   let objArray = {array : []};
-  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&gallery=${id}`)
+  fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&gallery=${id}&page=${page}`)
   .then((response) => response.json())
   .then((data) => {
     if (data.records.length == 0) {
@@ -260,8 +260,10 @@ function showObjectsTable(id) {
       objArray.array.push(objElement);
       objectsPage.appendChild(objElement);
     });}
+    if (data.info.next) {
+      showObjectsTable(id, page + 1);
+    }
     paginate(objectsPage);
-    window.localStorage.setItem(storageId, objArray);
     button1.innerHTML += `<input type="button" class = "btn btn-outline-success ml-3" value="Go Back" onclick="window.location.href='index.html'; load()">`
   });
 }
