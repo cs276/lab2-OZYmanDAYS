@@ -34,6 +34,7 @@ function load() {
   }
   else {
       showGalleries(url);
+      paginateGal(galleries);
   }
 }
 
@@ -60,7 +61,8 @@ function showGalleries(url) {
     if (data.info.next) {
       showGalleries(data.info.next);
     }
-  })
+    paginateGal(galleries)
+  });
 }
 
 function showGalleryFloor(url) {
@@ -86,6 +88,7 @@ function showGalleryFloor(url) {
     if (data.info.next) {
       showGalleryFloor(data.info.next);
     }
+    paginateGal(galleries);
   });
 }
 
@@ -128,7 +131,7 @@ function getRadioVal(form, name) {
   return val; // return value of checked radio or undefined if none checked
 }
 
-function searchtype(searchVal){
+function searchtype(searchVal, page = 1){
   let sOption = getRadioVal(searchOption, 'options');
   if (searchVal == "") {
     alert("Please search for something!")
@@ -138,7 +141,8 @@ function searchtype(searchVal){
     alert("Please select a search type!")
   }
   else {
-    fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&${sOption}=${searchVal}`)
+    console.log(sOption);
+    fetch(`https://api.harvardartmuseums.org/object?apikey=${API_KEY}&${sOption}=${searchVal}&page=${page}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.records.length == 0) {
@@ -156,8 +160,11 @@ function searchtype(searchVal){
           <td><img src="${obj.primaryimageurl}" onerror="this.onerror=null; this.src = './noimage.jpg'"></td>
         </tr>
       `;
-      paginate(searchResultsPage);
     });
+    if (data.info.next) {
+      searchtype(searchVal, page + 1);
+    }
+    paginate(searchResultsPage);
   }});
 }
 }
@@ -265,6 +272,16 @@ function paginate(htmlId) {
         return htmlId.getElementsByTagName("tr");
           },
     box: document.getElementById("objectTableBox"),
+    active_class: "color_page"
+  });
+}
+
+function paginateGal(htmlId) {
+  paginator({
+    get_rows: function () {
+        return htmlId.getElementsByTagName("li");
+          },
+    box: document.getElementById("galBox"),
     active_class: "color_page"
   });
 }
